@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<title>ARYAN ARJU SITAL JAL</title>
+<style>
+body{font-family: Arial,sans-serif;background:#eef;text-align:center;margin:0;}
+.page{display:none;margin-top:40px;}
+button{font-size:18px;padding:10px 25px;margin:10px;cursor:pointer;border-radius:5px;}
+input,textarea{font-size:16px;padding:6px;margin:6px;width:80%;max-width:300px;}
+.logo{width:120px;height:120px;border-radius:50%;background:#2196f3;color:white;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold;margin:20px auto;}
+.result{font-size:18px;color:white;}
+.nav{margin-top:20px;}
+</style>
+
+<script>
+let currentPage=1;
+let googleSheetURL = "YOUR_GOOGLE_WEB_APP_URL_HERE"; // Replace with your Google Web App URL
+
+function showPage(page){currentPage=page;let pages=document.getElementsByClassName("page");for(let i=0;i<pages.length;i++){pages[i].style.display="none";}document.getElementById("p"+page).style.display="block";}
+function nextPage(){showPage(currentPage+1);}
+function backPage(){if(currentPage>1){showPage(currentPage-1);}}
+
+function showResult(){
+    let name=document.getElementById("nameInput").value;
+    let mobile=document.getElementById("mobileInput").value;
+    let bottle=Number(document.getElementById("bottleInput").value);
+    let dispenser=Number(document.getElementById("dispenserInput").value);
+    let date=document.getElementById("dateInput").value;
+    let total=(bottle*30)+(dispenser*30)+200;
+
+    document.getElementById("rname").innerText=name;
+    document.getElementById("rmobile").innerText=mobile;
+    document.getElementById("rbottle").innerText=bottle;
+    document.getElementById("rdispenser").innerText=dispenser;
+    document.getElementById("rdate").innerText=date;
+    document.getElementById("rtotal").innerText=total;
+
+    // Send data to Google Sheet
+    fetch(googleSheetURL, {
+        method:"POST",
+        body: JSON.stringify({name:name,mobile:mobile,bottle:bottle,dispenser:dispenser,date:date,total:total})
+    });
+
+    showPage(5);
+}
+
+// WhatsApp button
+function sendWhatsApp(){
+    let name=document.getElementById("rname").innerText;
+    let mobile=document.getElementById("rmobile").innerText;
+    let bottle=document.getElementById("rbottle").innerText;
+    let dispenser=document.getElementById("rdispenser").innerText;
+    let date=document.getElementById("rdate").innerText;
+    let total=document.getElementById("rtotal").innerText;
+
+    let message="नया ऑर्डर प्राप्त हुआ है:%0A%0A"+
+        "नाम: "+name+"%0A"+
+        "मोबाइल: "+mobile+"%0A"+
+        "बोतल संख्या: "+bottle+"%0A"+
+        "डिस्पेंसर संख्या: "+dispenser+"%0A"+
+        "तारीख: "+date+"%0A"+
+        "कुल राशि: ₹"+total;
+
+    let url="https://wa.me/917369842911?text="+message;
+    window.open(url,"_blank");
+}
+</script>
+</head>
+
+<body onload="showPage(1)">
+
+<!-- PAGE 1 -->
+<div class="page" id="p1">
+    <h1>Welcome My Website</h1>
+    <div class="logo">ARYAN<br>ARJU</div>
+    <h2>ARYAN ARJU SITAL JAL</h2>
+    <p><b>Company Address:</b><br>Vill: Sonwaliya Korar<br>Post: Rajapatti Kothi<br>Dist: Gopalganj</p>
+    <p style="color:#006400;font-weight:bold;font-size:18px;">विवाह, पूजा-पाठ एवं अन्य सभी शुभ अवसरों के लिए शुद्ध एवं ठंडे पेयजल की सुविधा उपलब्ध है।</p>
+    <div class="nav"><button onclick="nextPage()">Next</button></div>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" id="p2">
+    <h2>Customer Details</h2>
+    <input id="nameInput" type="text" placeholder="Customer Name"><br>
+    <input id="mobileInput" type="number" placeholder="Mobile Number"><br>
+    <textarea placeholder="Full Address"></textarea>
+    <div class="nav">
+        <button onclick="backPage()">Back</button>
+        <button onclick="nextPage()">Next</button>
+    </div>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page" id="p3">
+    <h2>Order Details</h2>
+    <input id="bottleInput" type="number" placeholder="Number of Bottles"><br>
+    <input id="dispenserInput" type="number" placeholder="Number of Dispenser"><br>
+    <input id="dateInput" type="date">
+    <div class="nav">
+        <button onclick="backPage()">Back</button>
+        <button onclick="nextPage()">Next</button>
+    </div>
+</div>
+
+<!-- PAGE 4 -->
+<div class="page" id="p4">
+    <h2>Payment Information</h2>
+    <p>भुगतान की जानकारी के लिए <b>7369842911</b> पर संपर्क करें<br>समय: सुबह 7:00 बजे से शाम 9:00 बजे तक</p>
+    <div class="nav">
+        <button onclick="backPage()">Back</button>
+        <button onclick="showResult()">Next</button>
+    </div>
+</div>
+
+<!-- PAGE 5 -->
+<div class="page" id="p5" style="background:black;height:100vh;">
+    <h1 style="color:gold;font-size:50px;margin-top:40px;">THANK YOU</h1>
+    <div class="result">
+        <p>नाम: <span id="rname"></span></p>
+        <p>मोबाइल: <span id="rmobile"></span></p>
+        <p>बोतल संख्या: <span id="rbottle"></span></p>
+        <p>डिस्पेंसर संख्या: <span id="rdispenser"></span></p>
+        <p>तारीख: <span id="rdate"></span></p>
+        <p>पेट्रोल शुल्क: ₹200</p>
+        <hr style="width:60%;">
+        <p><b>कुल राशि: ₹<span id="rtotal"></span></b></p>
+        <button onclick="sendWhatsApp()" style="font-size:18px;padding:12px 25px;background:#25D366;color:white;border:none;border-radius:5px;margin-top:20px;">
+            Click Here
+        </button>
+    </div>
+    <div class="nav"><button onclick="backPage()">Back</button></div>
+</div>
+
+</body>
+</html>
